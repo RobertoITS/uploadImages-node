@@ -136,8 +136,6 @@ const getImage = async (req=request, res=response)=>{
   res.json({
     msg: 'Falta place Holder'
   })
-  
-022
 }
 
 
