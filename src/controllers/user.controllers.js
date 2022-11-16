@@ -21,13 +21,30 @@ const getUsers = async(req=request, res=response)=>{
     }
 }
 
-const addUser = ((req = request, res = response)=>{
-    try {
-        
-    } catch (error) {
-        
+const addUser = async(req = request, res = response)=>{
+    const { username, email, role } = req.body
+    const user = {
+        username: username,
+        email: email,
+        role: role
     }
-})
+    try {
+        const connection = await getConnection()
+        const result = await connection.query('INSERT INTO users SET ?', user)
+        res.status(200).json({
+            ok: true,
+            user,
+            result,
+            message: 'Todo ok'
+        })
+    } catch (error) {
+        res.status(400).json({
+            ok: false,
+            error,
+            message: 'Algo salio mal'
+        })
+    }
+}
 
 const updateUser = ((req = requestm, res = response)=>{
     try {

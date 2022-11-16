@@ -4,20 +4,43 @@ const { cargarArchivos } = require('../helpers/cargar-archivos');
 const path = require('path');
 const fs = require('fs');
 
-
+//Terminado:
+//Para subir imagenes con postman: body -> form-data -> el campo tiene que ser igual al que se pone en req.files."nombre"
 const subirArchivo = async(req = request, res=response)=>{
 
+  //*Obtenemos el id del header
+  const id = req.params.id
 
   if (!req.files || Object.keys(req.files).length === 0 || !req.files.archivo) {
     res.status(400).send('Los archivos no han sido subidos.');
     return;
   }
 
-  const pathUpload = await cargarArchivos(req.files, undefined,'images/users');
+  //* Obtenemos el nombre del archivo para guardarlo como ref. de la usuario:
+  const avatar = await cargarArchivos(req.files, undefined,'images/users');
+  const user = {
+    avatar: avatar
+  }
+  console.log(id, avatar);
+  try {
+    console.log(id, avatar);
+    //*Generamos la conexion y guardamos el nombre en la base
+    const connect = await getConnection()
+    console.log(connect);
+    const result = await connect.query('UPDATE users SET ? WHERE id = ?', [user, id])
+    console.log(result);
+    res.status(200).json({
+      ok: true,
+      avatar,
+      result
+    })
+  } catch (e){
+    res.status(400).json({
+      ok: false,
+      msg: 'Algo malio sal'
+    })
+  }
 
-  res.json(
-    pathUpload
-  )
 }
 
 
@@ -114,7 +137,7 @@ const getImage = async (req=request, res=response)=>{
     msg: 'Falta place Holder'
   })
   
-
+022
 }
 
 
